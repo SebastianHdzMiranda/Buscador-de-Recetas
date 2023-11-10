@@ -79,7 +79,6 @@ function iniciarApp() {
             recetaBtn.onclick = ()=> {
                 seleccionarReceta(idMeal);
             }
-            
 
             // Inyectar HTML
             recetaCardBody.appendChild(recetaHeading);
@@ -91,9 +90,6 @@ function iniciarApp() {
             recetaContenedor.appendChild(recetaCard);
 
             resultado.appendChild(recetaContenedor);
-
-
-            
         });        
     }
 
@@ -104,7 +100,6 @@ function iniciarApp() {
 
     function mostrarRecetaModal(receta) {
         const {idMeal, strInstructions, strMeal, strMealThumb} = receta;
-
         
         const modalTitle = document.querySelector('.modal .modal-title');
         const modalBody = document.querySelector('.modal .modal-body');
@@ -130,8 +125,6 @@ function iniciarApp() {
                 listadoIngredientes.innerHTML += `<li class="list-group-item">${ingrediente} - ${cantidad}</li>`;
             }
         }
-
-        
         
         modalBody.appendChild(listadoIngredientes);
         
@@ -142,12 +135,27 @@ function iniciarApp() {
         
         const favoritoBtn = document.createElement('button');
         favoritoBtn.className = 'btn btn-danger col guardar';
-        favoritoBtn.textContent = 'Guardar Favorito';
-        favoritoBtn.onclick = ()=> agregarFavorito({
-            id: idMeal,
-            img: strMealThumb,
-            title: strMeal,
-        });
+        
+        favoritoBtn.textContent = existeStorage(idMeal) ? 'Eliminar Favorito' : 'Guardar Favorito';
+
+        favoritoBtn.onclick = ()=>{ 
+
+            // codigo que me permite no añadir duplicados al storage.
+            if (existeStorage(idMeal)) {
+                eliminarFavorito(idMeal);
+                favoritoBtn.textContent = 'Guardar Favorito';
+                mostrarToast('Eliminado de Favoritos');
+                return;
+            }
+            agregarFavorito({
+                id: idMeal,
+                img: strMealThumb,
+                title: strMeal,
+            });
+            favoritoBtn.textContent = 'Eliminar Favorito';
+            mostrarToast('Agregado a Favoritos');
+
+        }
         
         const cerrarBtn = document.createElement('button');
         cerrarBtn.className = 'btn btn-secondary col';
@@ -161,13 +169,11 @@ function iniciarApp() {
         // muestra el modal
         modal.show();
 
-        // agregarFavorito(receta);
     }
 
     function agregarFavorito(receta) {
         const favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
-
-
+        
         /* Por que se usa una copia del arreglo?:
             - Cuando se almacena un arreglo en localStorage sin crear una copia, se produce una situación en la que cada vez que se agrega un nuevo elemento al arreglo y se guarda nuevamente en localStorage, se crea una nueva instancia del arreglo anidado. 
 
@@ -180,6 +186,30 @@ function iniciarApp() {
         localStorage.setItem('favoritos', JSON.stringify([...favoritos, receta]));
     }
 
+    function eliminarFavorito(id) {
+        const  favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+        const nuevosFavoritos = favoritos.filter( favorito => favorito.id !== id);
+        
+        localStorage.setItem('favoritos', JSON.stringify(nuevosFavoritos));
+    }
+
+    function existeStorage(id) {
+        const favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
+        // some revisa si un valor existe y te retorna un boolean
+        return favoritos.some( favorito => favorito.id === id);
+    }
+
+    function mostrarToast(mensaje) {
+        const toastDiv = document.querySelector('#toast');
+        const toastBody = document.querySelector('.toast-body');
+
+        // instancia de toast de bootstrap 
+        const toast = new bootstrap.Toast(toastDiv);
+
+        toastBody.textContent = mensaje;
+        toast.show();
+    }
+    
     function limpiarHTML(selector) {
         while (selector.firstChild) {
             selector.removeChild(selector.firstChild);
