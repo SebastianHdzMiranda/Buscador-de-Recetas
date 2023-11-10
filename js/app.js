@@ -143,7 +143,11 @@ function iniciarApp() {
         const favoritoBtn = document.createElement('button');
         favoritoBtn.className = 'btn btn-danger col guardar';
         favoritoBtn.textContent = 'Guardar Favorito';
-        favoritoBtn.onclick = ()=> agregarFavorito(receta.idMeal);
+        favoritoBtn.onclick = ()=> agregarFavorito({
+            id: idMeal,
+            img: strMealThumb,
+            title: strMeal,
+        });
         
         const cerrarBtn = document.createElement('button');
         cerrarBtn.className = 'btn btn-secondary col';
@@ -163,10 +167,17 @@ function iniciarApp() {
     function agregarFavorito(receta) {
         const favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
 
-        favoritos.push(receta);
 
-        localStorage.setItem('favoritos', JSON.stringify(favoritos));
+        /* Por que se usa una copia del arreglo?:
+            - Cuando se almacena un arreglo en localStorage sin crear una copia, se produce una situación en la que cada vez que se agrega un nuevo elemento al arreglo y se guarda nuevamente en localStorage, se crea una nueva instancia del arreglo anidado. 
 
+                [receta[receta[receta]]]
+            
+            - Sin embargo, al crear una copia del arreglo utilizando el operador de propagación ... (spread operator), como en JSON.stringify([...favoritos, receta]), se asegura que solo se guarde la última versión del arreglo sin anidamiento adicional. Al utilizar una copia del arreglo, se garantiza que siempre se almacene la instancia más reciente y actualizada en localStorage, sin crear múltiples niveles de anidamiento.
+
+                [{receta}, {receta}]
+        */
+        localStorage.setItem('favoritos', JSON.stringify([...favoritos, receta]));
     }
 
     function limpiarHTML(selector) {
