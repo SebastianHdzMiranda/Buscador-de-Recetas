@@ -153,7 +153,11 @@ function iniciarApp() {
                 eliminarFavorito(idMeal);
                 favoritoBtn.textContent = 'Guardar Favorito';
                 mostrarToast('Eliminado de Favoritos');
+                if (window.location.pathname !== '/37-PROYECTO-BuscadorRecetas/index.html') {
+                    location.reload();
+                }
                 return;
+
             }
             agregarFavorito({
                 id: idMeal,
