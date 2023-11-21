@@ -114,6 +114,13 @@ function iniciarApp() {
         
         const modalTitle = document.querySelector('.modal .modal-title');
         const modalBody = document.querySelector('.modal .modal-body');
+        const modalContent = document.querySelector('#modal');
+
+        modalContent.onclick = (e)=> {
+            if(e.target.classList.contains('fade')) {
+                modal.hide();
+            }
+        }
 
         modalTitle.textContent = strMeal;
         modalBody.innerHTML = `
@@ -204,7 +211,7 @@ function iniciarApp() {
         // modalfooter.appendChild(cerrarBtn);
 
         // muestra el modal
-        modal.show();
+        // modal.show();
 
     }
 
