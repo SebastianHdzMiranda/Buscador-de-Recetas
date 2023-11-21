@@ -194,14 +194,14 @@ function iniciarApp() {
 
         }
         
-        const cerrarBtn = document.createElement('button');
-        cerrarBtn.className = 'btn btn-secondary col';
-        cerrarBtn.textContent = 'Cerrar';
-        // Oculta el modal
-        cerrarBtn.onclick = ()=> modal.hide();
+        // const cerrarBtn = document.createElement('button');
+        // cerrarBtn.className = 'btn btn-secondary col';
+        // cerrarBtn.textContent = 'Cerrar';
+        // // Oculta el modal
+        // cerrarBtn.onclick = ()=> modal.hide();
 
         modalfooter.appendChild(favoritoBtn);
-        modalfooter.appendChild(cerrarBtn);
+        // modalfooter.appendChild(cerrarBtn);
 
         // muestra el modal
         modal.show();
