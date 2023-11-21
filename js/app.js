@@ -107,7 +107,10 @@ function iniciarApp() {
     }
 
     function mostrarRecetaModal(receta) {
-        const {idMeal, strInstructions, strMeal, strMealThumb} = receta;
+        const {idMeal, strInstructions, strMeal, strMealThumb, strYoutube} = receta;
+
+        // variable que extrae el id del video
+        const videoId = strYoutube.match(/v=([^&]+)/)[1];
         
         const modalTitle = document.querySelector('.modal .modal-title');
         const modalBody = document.querySelector('.modal .modal-body');
@@ -133,8 +136,29 @@ function iniciarApp() {
                 listadoIngredientes.innerHTML += `<li class="list-group-item">${ingrediente} - ${cantidad}</li>`;
             }
         }
+
+        const video = document.createElement('div');
+        video.className = 'my-3';
+        video.innerHTML = `
+            <iframe 
+                width="100%" 
+                height="315" 
+                src=https://www.youtube.com/embed/${videoId} 
+                title="YouTube video player" 
+                frameborder="0" 
+                allow="accelerometer; 
+                autoplay; 
+                clipboard-write; 
+                encrypted-media; 
+                gyroscope; 
+                picture-in-picture; 
+                web-share" 
+                allowfullscreen>
+            </iframe>
+        `
         
         modalBody.appendChild(listadoIngredientes);
+        modalBody.appendChild(video);
         
         // Botones Codigo
         const modalfooter = document.querySelector('.modal-footer');
@@ -153,7 +177,8 @@ function iniciarApp() {
                 eliminarFavorito(idMeal);
                 favoritoBtn.textContent = 'Guardar Favorito';
                 mostrarToast('Eliminado de Favoritos');
-                if (window.location.pathname !== '/37-PROYECTO-BuscadorRecetas/index.html') {
+                // esta expresion se utiliza para verificar si la cadena "favoritos.html" está presente en la URL actual, si se encuentra devuelve el numero donde se posiciona, si es -1 es que no existe.
+                if (window.location.href.indexOf('favoritos.html') !== -1) {
                     location.reload();
                 }
                 return;
@@ -225,7 +250,7 @@ function iniciarApp() {
     function obtenerFavoritos() {
         const favoritos = JSON.parse(localStorage.getItem('favoritos')) || [];
 
-        console.log(favoritos);
+        // console.log(favoritos);
         if (favoritos.length) {
             
             mostrarRecetas(favoritos);
